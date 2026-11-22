@@ -1,55 +1,85 @@
-import { createContext, useContext, useEffect, useState } from "react"
-import SubjectStudentDetails from "./SubjectStudentDetails"
-import Student from "./Student"
-import { CurrentSubjectContext, NextSubjectsContext, TokenContext, UserSubjectsContext } from "../App"
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useState } from 'react'
+import { CloseIcon } from './Icons'
+import Student from './Student'
+import SubjectStudentDetails from './SubjectStudentDetails'
 
 export const EnrollmentDetailsContext = createContext(null)
 
-function FacultySubjectModal({ modalId, user, subject }) {
+function FacultySubjectModal({ modalId, user, subject, onClose }) {
+  const [enrollmentDetails, setEnrollmentDetails] = useState(null)
 
-    const [enrollmentDetails, setEnrollmentDetails] = useState(null)
+  if (modalId != 3) {
+    return null
+  }
 
-    const [token, setToken] = useContext(TokenContext)
+  const enrollments = subject?.enrollments ?? []
+  const count = enrollments.length
 
-    // const [nextSubjects, setNextSubjects] = useContext(NextSubjectsContext)
-    // const [currentSubject, setCurrentSubject] = useContext(CurrentSubjectContext)
-    // const [userSubjects, setUserSubjects] = useContext(UserSubjectsContext)
+  return (
+    <EnrollmentDetailsContext.Provider value={[enrollmentDetails, setEnrollmentDetails]}>
+      {enrollmentDetails && (
+        <SubjectStudentDetails user={user} subject={subject} enrollment={enrollmentDetails} />
+      )}
 
-    const handleClick = (enrollment) => {
-        setEnrollmentDetails(s => enrollment)
-    }
-
-    useEffect(() => {
-        // console.log(enrollmentDetails)
-    })
-    return (
-        <EnrollmentDetailsContext.Provider value={[enrollmentDetails, setEnrollmentDetails]}>
-            <div className={((modalId == 3)? "flex" : "hidden") + " w-full h-full relative justify-center items-center"}>
-                {(enrollmentDetails) ? <SubjectStudentDetails user={user} subject={subject} enrollment={enrollmentDetails} /> : ''}
-                
-                <div className="w-11/12 h-3/6 max-h-full bg-white rounded-lg flex flex-col items-center justify-center z-50">
-                    <div className="w-11/12 h-5/6 flex flex-col justify-start items-center relative border-t-2 border-lightgray">
-                        <div className="bg-white px-2 absolute top-[-1.10rem]">
-                            <span className="text-xl font-light">{`${subject?.name} ${subject?.code}`}</span>
-                        </div>
-                        <div className="w-full flex mt-1">
-                            <div className="w-1/2 flex justify-start">
-                                <span className="ml-6">Name</span>
-                            </div>
-                            <div className="w-1/2 flex justify-end">
-                                <span className="mr-6">Year</span>
-                            </div>
-                        </div>
-                        <div className="w-full h-full mt-2 overflow-auto scrollbar-none">
-                            {subject?.enrollments?.map(enrollment => (
-                                <Student key={enrollment?.id} student={enrollment?.user} enrollment={enrollment} />
-                            ))}
-                        </div>
-                    </div>
-                </div>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="faculty-subject-title"
+        className="relative z-10 w-full sm:max-w-lg max-h-[85dvh] bg-white rounded-t-2xl sm:rounded-2xl border border-slate-200 shadow-xl flex flex-col overflow-hidden animate-modal-in"
+      >
+        <div className="px-5 py-4 flex items-start justify-between gap-3 shrink-0">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              {subject?.code && (
+                <span className="font-mono text-xs font-medium uppercase tracking-wider bg-brand-soft text-brand px-2 py-0.5 rounded-md tabular-nums">
+                  {subject.code}
+                </span>
+              )}
+              <span className="text-xs font-medium tabular-nums bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                {count} {count === 1 ? 'student' : 'students'}
+              </span>
             </div>
-        </EnrollmentDetailsContext.Provider>
-    )
+            <h2
+              id="faculty-subject-title"
+              className="text-base font-semibold text-slate-900 truncate mt-1.5"
+            >
+              {subject?.name || 'Subject Roster'}
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close subject roster"
+            className="min-w-[44px] min-h-[44px] -mr-2 -mt-1 flex items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 btn-press shrink-0"
+          >
+            <CloseIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="px-5 py-2.5 bg-surface-subtle border-y border-slate-100 flex items-center justify-between text-xs font-medium uppercase tracking-wider text-slate-500 shrink-0">
+          <span>Student</span>
+          <span>Year</span>
+        </div>
+
+        <div className="overflow-y-auto divide-y divide-slate-100 flex-1">
+          {count > 0 ? (
+            enrollments.map((enrollment) => (
+              <Student key={enrollment?.id} student={enrollment?.user} enrollment={enrollment} />
+            ))
+          ) : (
+            <div className="px-5 py-10 text-center">
+              <p className="text-sm font-medium text-slate-900">No students enrolled</p>
+              <p className="text-sm text-slate-500 mt-1 max-w-prose mx-auto">
+                Enrolled students for this subject will appear here.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </EnrollmentDetailsContext.Provider>
+  )
 }
 
 export default FacultySubjectModal

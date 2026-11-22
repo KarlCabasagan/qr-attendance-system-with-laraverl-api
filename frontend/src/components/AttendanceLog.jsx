@@ -1,28 +1,33 @@
+import { CheckIcon, XMarkIcon } from './Icons'
 
 function AttendanceLog({ attendance }) {
+  const present = Boolean(attendance?.time)
+  const formattedTime = attendance?.time ? attendance.time.slice(0, 5) : '—'
 
-    const handleOnChange = () => {
+  return (
+    <div className="py-2.5 flex items-center justify-between gap-3">
+      <div className="min-w-0">
+        <span className="block text-sm font-medium text-slate-900 tabular-nums">
+          {attendance?.date || '—'}
+        </span>
+        <span className="block text-xs font-mono text-slate-500 tabular-nums mt-0.5">
+          {formattedTime}
+        </span>
+      </div>
 
-    }
-
-    return (
-        <div className="w-full h-1/6 flex items-center">
-            <div className="w-1/2 flex justify-between items-center">
-                <span className="text-lg font-semibold">{attendance?.date}</span>
-                <span className="grow text-lg font-thin truncate ml-4">{attendance?.time?.slice(0, -3)}</span>
-            </div>
-            <form className="w-6/12 flex">
-                <label className="w-1/2 flex justify-center">
-                    <input onChange={handleOnChange} checked={attendance?.time ? true : false} type="radio" name="attendance" className="peer sr-only" />
-                    <div htmlFor="present1" className="w-4 h-4 mt-1 rounded-full bg-lightgray border-lightpurple border-2 peer-checked:bg-lightpurple"></div>
-                </label>
-                <label className="w-1/2 flex justify-center">
-                    <input onChange={handleOnChange} checked={attendance?.time ? false : true} type="radio" name="attendance" className="peer sr-only" />
-                    <div htmlFor="absent2" className="w-4 h-4 mt-1 rounded-full bg-lightgray border-lightpurple border-2 peer-checked:bg-lightpurple"></div>
-                </label>
-            </form>
-        </div>
-    )
+      <span
+        className={
+          'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border shrink-0 ' +
+          (present
+            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+            : 'bg-rose-50 text-rose-700 border-rose-200')
+        }
+      >
+        {present ? <CheckIcon className="w-3.5 h-3.5" /> : <XMarkIcon className="w-3.5 h-3.5" />}
+        <span>{present ? 'Present' : 'Absent'}</span>
+      </span>
+    </div>
+  )
 }
 
 export default AttendanceLog

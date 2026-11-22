@@ -1,25 +1,27 @@
-
 function CourseAndYear({ userRole, user }) {
-    return (
-        <div className={((userRole == 1) ? "block" : "hidden") + " w-full"}>
-            <div className="w-full flex flex-col items-center relative mt-3">
-                <div className="w-11/12 p-4 border-b-2 border-lightgray border-opacity-75 flex justify-center">
-                    <span className="text-xl">{user?.course}</span>
-                </div>
-                <div className="px-2 absolute bg-white bottom-[-0.50rem]">
-                    <span className="text-gray">Course</span>
-                </div>
-            </div>
-            <div className="w-full flex flex-col items-center relative mt-3">
-                <div className="w-11/12 p-4 border-b-2 border-lightgray border-opacity-75 flex justify-center">
-                    <span className="text-xl">{user?.year}</span>
-                </div>
-                <div className="px-2 absolute bg-white bottom-[-0.50rem]">
-                    <span className="text-gray">Year Level</span>
-                </div>
-            </div>
-        </div>
-    )
+  if (userRole != 1) {
+    return null
+  }
+
+  return (
+    <>
+      <div className="px-5 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <dt className="text-xs font-medium uppercase tracking-wider text-slate-500">Course</dt>
+        <dd className="text-sm font-medium text-slate-900 break-words">
+          {user?.course || '—'}
+        </dd>
+      </div>
+
+      <div className="px-5 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <dt className="text-xs font-medium uppercase tracking-wider text-slate-500">
+          Year Level
+        </dt>
+        <dd className="text-sm font-medium text-slate-900 tabular-nums">
+          {user?.year || '—'}
+        </dd>
+      </div>
+    </>
+  )
 }
 
 export default CourseAndYear

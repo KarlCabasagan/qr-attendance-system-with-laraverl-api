@@ -2,8 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-#root {
-  display: flex;
-  justify-content: center;
-  background-color: #bfbfbf;
+@layer base {
+  html,
+  body {
+    background-color: #F8FAFC;
+    color: #0F172A;
+    min-height: 100dvh;
+    font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    caret-color: #402E7A;
+  }
+
+  ::selection {
+    background-color: #DDD6F3;
+    color: #322362;
+  }
+
+  :focus-visible {
+    outline: 2px solid #402E7A;
+    outline-offset: 2px;
+  }
+}
+
+.btn-press {
+  transition: transform 100ms ease, background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
